@@ -4,10 +4,10 @@ def input_error(func):
             return func(*args, **kwargs)
         except ValueError:
             return "Give me name and phone please."
-        except KeyError as e:
-            return f"{str(e)}"
+        except KeyError:
+            return "Enter user name please."
         except IndexError:
-            return "Test"
+            return "Give me name and phone please."
         except Exception as e:
             return f"An unexpected error occurred: {str(e)}"
 
@@ -17,16 +17,6 @@ def input_error(func):
 def parse_input(user_input):
     cmd, *args = user_input.split()
     cmd = cmd.strip().lower()
-
-    if not any(cmd):
-        raise IndexError("Requires a command.")
-
-    if cmd in ["add", "change"] and len(args) < 2:
-        raise IndexError("Command requires at least two arguments.")
-    
-    if cmd in ["all", "phone"] and len(args) < 1:
-        raise IndexError("Command requires one argument.")
-
     return cmd, *args
 
 
@@ -35,7 +25,7 @@ def add_contact(args, contacts):
     name, phone = args
     name = ''.join(name)
     if is_contact_exists(name, contacts):
-        raise KeyError(f"Contact {name} exists.")
+        raise IndexError
     contacts[name] = phone
     return "Contact added."
 
@@ -47,7 +37,7 @@ def username_phone(args, contacts):
     if is_contact_exists(name, contacts):
         return contacts[name]
     else:
-        raise KeyError(f"No such contact in the list.")
+        raise KeyError
 
 
 @input_error
@@ -59,7 +49,7 @@ def change_username_phone(args, contacts):
         contacts[name] = phone
         return "Phone was changed."
     else:
-        raise KeyError(f"No such contact in the list.")
+        raise KeyError
 
 
 def is_contact_exists(name, contacts):
